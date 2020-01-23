@@ -148,9 +148,15 @@ public class PgResultSetMetaData implements ResultSetMetaData, PGResultSetMetaDa
 
   public String getBaseColumnName(int column) throws SQLException {
     Field field = getField(column);
-    if (field.getTableOid() == 0) {
-      return "";
-    }
+    // JHKuperus : Please note that the following three lines have been commented out to allow
+    // the use of ResultSet.insertRow() while working with CockroachDB. CockroachDB sends a 
+    // TableOid of 0 for every field, which is hopefully a bug in their PG-compatibility.
+    //
+    // This fork only exists to allow me to use CockroachDB while the issue is being looked
+    // at and fixed. 
+//    if (field.getTableOid() == 0) {
+//      return "";
+//    }
     fetchFieldMetaData();
     FieldMetadata metadata = field.getMetadata();
     return metadata == null ? "" : metadata.columnName;
